@@ -1,0 +1,121 @@
+---
+// Lightweight animated diagonal-band gradient (2D canvas, no WebGL dependency).
+// Serves as the reduced-motion / video-unavailable fallback behind the hero video,
+// and as a section-divider background elsewhere. GPU-cheap: a handful of translated
+// gradient bands redrawn on a throttled rAF loop, paused off-screen via IntersectionObserver.
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<canvas class:list={['gradient-canvas', className]} data-gradient-canvas aria-hidden="true"></canvas>
+
+<style>
+  .gradient-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  function setupGradientCanvas(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let width = 0;
+    let height = 0;
+    let raf = 0;
+    let running = false;
+    let t = reduceMotion ? 0.4 : 0;
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(1, Math.floor(rect.width));
+      height = Math.max(1, Math.floor(rect.height));
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function draw() {
+      ctx!.clearRect(0, 0, width, height);
+
+      // Base fill: deep navy.
+      ctx!.fillStyle = '#111A4A';
+      ctx!.fillRect(0, 0, width, height);
+
+      const bandCount = 5;
+      const diag = Math.sqrt(width * width + height * height);
+      const angle = (60 * Math.PI) / 180;
+
+      ctx!.save();
+      ctx!.translate(width / 2, height / 2);
+      ctx!.rotate(angle - Math.PI / 2);
+      ctx!.translate(-diag / 2, -diag / 2);
+
+      const drift = Math.sin(t) * diag * 0.08;
+
+      for (let i = 0; i < bandCount; i++) {
+        const bandWidth = diag / bandCount;
+        const x = i * bandWidth + drift - bandWidth;
+        const grad = ctx!.createLinearGradient(x, 0, x + bandWidth * 1.4, 0);
+        grad.addColorStop(0, 'rgba(43, 58, 143, 0)');
+        grad.addColorStop(0.5, `rgba(79, 179, 232, ${0.16 + 0.05 * Math.sin(t + i)})`);
+        grad.addColorStop(1, 'rgba(127, 180, 32, 0)');
+        ctx!.fillStyle = grad;
+        ctx!.fillRect(x, -diag * 0.1, bandWidth * 1.4, diag * 1.2);
+      }
+
+      ctx!.restore();
+
+      if (!reduceMotion) {
+        t += 0.0025;
+      }
+    }
+
+    function loop() {
+      draw();
+      if (!reduceMotion) raf = requestAnimationFrame(loop);
+    }
+
+    function start() {
+      if (running) return;
+      running = true;
+      resize();
+      if (reduceMotion) {
+        draw();
+      } else {
+        loop();
+      }
+    }
+
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) start();
+          else stop();
+        }
+      },
+      { threshold: 0 }
+    );
+    io.observe(canvas);
+
+    window.addEventListener('resize', () => {
+      resize();
+      if (reduceMotion) draw();
+    });
+  }
+
+  document.querySelectorAll<HTMLCanvasElement>('[data-gradient-canvas]').forEach(setupGradientCanvas);
+</script>

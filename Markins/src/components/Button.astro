@@ -1,0 +1,89 @@
+---
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'ghost-light' | 'ghost-dark';
+  class?: string;
+  type?: 'button' | 'submit';
+  magnetic?: boolean;
+}
+
+const {
+  href,
+  variant = 'primary',
+  class: className = '',
+  type = 'button',
+  magnetic = false,
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  href={href}
+  type={!href ? type : undefined}
+  class:list={['btn', `btn--${variant}`, { 'js-magnetic': magnetic }, className]}
+>
+  <span class="btn__label"><slot /></span>
+</Tag>
+
+<style>
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    padding: 0.9rem 1.75rem;
+    border-radius: 999px;
+    min-height: 44px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition:
+      transform 0.35s var(--ease-hinge),
+      background-color 0.3s var(--ease-hinge),
+      color 0.3s var(--ease-hinge),
+      border-color 0.3s var(--ease-hinge);
+  }
+
+  .btn--primary {
+    background: var(--color-navy-600);
+    color: white;
+  }
+  .btn--primary:hover {
+    background: var(--color-navy-800);
+  }
+
+  .btn--ghost-light {
+    background: transparent;
+    color: white;
+    border-color: rgba(255, 255, 255, 0.55);
+  }
+  .btn--ghost-light:hover {
+    border-color: white;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .btn--ghost-dark {
+    background: transparent;
+    color: var(--color-navy-800);
+    border-color: color-mix(in srgb, var(--color-navy-800) 35%, transparent);
+  }
+  .btn--ghost-dark:hover {
+    border-color: var(--color-navy-800);
+    background: color-mix(in srgb, var(--color-navy-800) 6%, transparent);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+</style>

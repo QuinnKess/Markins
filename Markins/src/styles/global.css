@@ -1,0 +1,47 @@
+@import 'tailwindcss';
+@import './fonts.css';
+@import './tokens.css';
+
+html {
+  scroll-behavior: auto; /* smooth scroll is handled by Lenis/GSAP when JS + motion are allowed */
+}
+
+/* Every anchor-jump target needs room for the fixed nav, or its heading lands under it. */
+section[id],
+[id].hero {
+  scroll-margin-top: 96px;
+}
+
+body {
+  background: var(--color-paper-50);
+  color: var(--color-ink-900);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-lime-500);
+  color: var(--color-navy-950);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-sky-400);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 100;
+  background: var(--color-navy-950);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: top 0.2s var(--ease-hinge);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}

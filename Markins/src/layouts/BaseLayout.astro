@@ -1,0 +1,110 @@
+---
+import '../styles/global.css';
+import { testimonials } from '../lib/testimonials';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Relative path, e.g. "/projects/sheldon-street-kitchen" — canonical is derived from Astro.site. */
+  path?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  path = Astro.url.pathname,
+  ogImage = '/og-image.jpg',
+  noindex = false,
+} = Astro.props;
+
+const canonicalURL = new URL(path, Astro.site);
+const siteName = 'Markins Development Group';
+const fullTitle = title.includes('Markins') ? title : `${title} | ${siteName}`;
+
+const localBusinessJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  name: 'Markins Development Group, LLC',
+  image: new URL(ogImage, Astro.site).toString(),
+  telephone: '+12157393806',
+  email: undefined,
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '2780 Jasper Street',
+    addressLocality: 'Philadelphia',
+    addressRegion: 'PA',
+    postalCode: '19134',
+    addressCountry: 'US',
+  },
+  areaServed: [
+    'Philadelphia, PA',
+    'Bucks County, PA',
+    'Montgomery County, PA',
+    'Delaware County, PA',
+  ],
+  url: Astro.site?.toString(),
+  founder: {
+    '@type': 'Person',
+    name: 'Marjus Veliaj',
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: (
+      testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length
+    ).toFixed(1),
+    reviewCount: testimonials.length,
+  },
+  makesOffer: [
+    {
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: 'Kitchen & Bath Remodeling' },
+    },
+    {
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: 'Home Renovation' },
+    },
+    {
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: 'New Construction' },
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content={siteName} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+
+    <meta name="theme-color" content="#111A4A" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessJsonLd)} is:inline />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <slot />
+  </body>
+</html>

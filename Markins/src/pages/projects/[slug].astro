@@ -1,0 +1,174 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Button from '../../components/Button.astro';
+import BeforeAfterSlider from '../../components/BeforeAfterSlider.astro';
+import { projects } from '../../lib/projects';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const compareB = project.gallery[2] ?? project.gallery[1] ?? project.hero;
+---
+
+<BaseLayout
+  title={`${project.title} | Markins Development Group`}
+  description={project.blurb}
+  path={`/projects/${project.slug}`}
+>
+  <Nav solid />
+  <main id="main">
+    <article class="pdetail">
+      <header class="pdetail__header">
+        <p class="pdetail__eyebrow">{project.category} · {project.neighborhood}</p>
+        <h1 class="pdetail__title">{project.title}</h1>
+        <p class="pdetail__blurb">{project.blurb}</p>
+      </header>
+
+      <div class="pdetail__hero">
+        <Image src={project.hero} alt={project.title} width={1800} height={1125} priority />
+      </div>
+
+      <div class="pdetail__body">
+        <p class="pdetail__detail">{project.detail}</p>
+        <p class="pdetail__todo">
+          <!-- TODO: confirm with client --> Exact address and project date available on request.
+        </p>
+      </div>
+
+      {
+        project.gallery.length > 1 && (
+          <div class="pdetail__compare">
+            <BeforeAfterSlider
+              imageA={project.gallery[0]}
+              imageB={compareB}
+              altA={`${project.title} — overview`}
+              altB={`${project.title} — detail`}
+            />
+          </div>
+        )
+      }
+
+      {
+        project.gallery.length > 2 && (
+          <div class="pdetail__gallery">
+            {project.gallery.slice(1).map((img, i) => (
+              <Image src={img} alt={`${project.title} — detail ${i + 1}`} width={900} height={1125} loading="lazy" />
+            ))}
+          </div>
+        )
+      }
+
+      <div class="pdetail__cta">
+        <h2>Want a kitchen like this one?</h2>
+        <Button href="/#quote" variant="primary">Request a Quote</Button>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .pdetail__header {
+    max-width: 900px;
+    margin-inline: auto;
+    padding: clamp(8rem, 16vw, 11rem) clamp(1.25rem, 5vw, 3rem) 3rem;
+  }
+  .pdetail__eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-navy-600);
+    margin-bottom: 1rem;
+  }
+  .pdetail__title {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    color: var(--color-ink-900);
+    margin-bottom: 1.25rem;
+  }
+  .pdetail__blurb {
+    font-size: var(--text-lede);
+    color: var(--color-ink-600);
+    max-width: 55ch;
+  }
+
+  .pdetail__hero {
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .pdetail__hero :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+  }
+
+  .pdetail__body {
+    max-width: 700px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .pdetail__detail {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--color-ink-900);
+  }
+  .pdetail__todo {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--color-ink-600);
+  }
+
+  .pdetail__compare {
+    max-width: 900px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .pdetail__gallery {
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: clamp(4rem, 8vw, 6rem);
+  }
+  .pdetail__gallery :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.75rem;
+  }
+  @media (min-width: 700px) {
+    .pdetail__gallery {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .pdetail__cta {
+    text-align: center;
+    max-width: 700px;
+    margin-inline: auto;
+    padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 5vw, 3rem) clamp(5rem, 10vw, 7rem);
+  }
+  .pdetail__cta h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-h3);
+    margin-bottom: 1.5rem;
+    color: var(--color-ink-900);
+  }
+</style>

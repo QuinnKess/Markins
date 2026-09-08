@@ -1,0 +1,261 @@
+---
+import { Image } from 'astro:assets';
+import kitchenImg from '../assets/images/projects/sheldon-st/01-hero.jpg';
+import renovationImg from '../assets/images/projects/nice-crib/01-hero.jpg';
+import newConstructionImg from '../assets/images/projects/thompson-st/01-hero.jpg';
+
+const services = [
+  {
+    id: 'kitchen-bath',
+    title: 'Kitchen & Bath',
+    image: kitchenImg,
+    alt: 'Renovated kitchen with marble waterfall island and integrated paneling',
+    description:
+      'The room that sells the house and does the most daily work. We design around how you actually cook and get ready, not just how a layout photographs.',
+    bullets: [
+      'Custom cabinetry & full layout design',
+      'Quartz & marble countertops, waterfall islands',
+      'Plumbing and electrical rework, not just cosmetic swaps',
+      'Tile, lighting, and hardware selection included',
+    ],
+  },
+  {
+    id: 'renovation',
+    title: 'Renovation',
+    image: renovationImg,
+    alt: 'Renovated open kitchen with green tile backsplash and brass fixtures',
+    description:
+      'Whole-home or single-room, we work inside your existing footprint or open it up — and we handle the permitting either way.',
+    bullets: [
+      'Whole-home & room-by-room remodels',
+      'Structural, electrical & plumbing updates',
+      'Flooring, trim, and paint carried through',
+      'Permits pulled and managed by our office',
+    ],
+  },
+  {
+    id: 'new-construction',
+    title: 'New Construction',
+    image: newConstructionImg,
+    alt: 'New-construction kitchen with reeded oak island and brass pendant lighting',
+    description:
+      'Ground-up interior build-outs for new rowhomes and additions, run with the same project management as a full renovation.',
+    bullets: [
+      'Ground-up interior build-outs',
+      'Framing through final finishes',
+      'Coordinated electrical, plumbing & HVAC trades',
+      'Single point of contact from permit to handover',
+    ],
+  },
+];
+---
+
+<section class="services" id="services" aria-label="Our services">
+  <div class="services__header">
+    <p class="services__eyebrow">What we do</p>
+    <h2 class="services__heading">Three ways we build value into a property.</h2>
+  </div>
+
+  <div class="services__layout">
+    <div class="services__media" aria-hidden="true">
+      {
+        services.map((service, i) => (
+          <div
+            class:list={['services__media-item', { 'is-active': i === 0 }]}
+            data-media-item={service.id}
+          >
+            <Image src={service.image} alt="" width={900} height={1125} />
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="services__panels">
+      {
+        services.map((service, i) => (
+          <article class="services__panel" data-service-panel={service.id}>
+            <div class="services__panel-mobile-image">
+              <Image src={service.image} alt={service.alt} width={800} height={600} />
+            </div>
+            <p class="services__panel-index">0{i + 1}</p>
+            <h3 class="services__panel-title">{service.title}</h3>
+            <p class="services__panel-desc">{service.description}</p>
+            <ul class="services__panel-bullets">
+              {service.bullets.map((b) => (
+                <li>{b}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .services {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: var(--color-paper-50);
+  }
+
+  .services__header {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+  .services__eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-navy-600);
+    margin-bottom: 1rem;
+  }
+  .services__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    max-width: 20ch;
+    color: var(--color-ink-900);
+  }
+
+  .services__layout {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+    display: grid;
+    gap: 3rem;
+  }
+
+  .services__media {
+    display: none;
+  }
+
+  .services__panel-mobile-image {
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 1.75rem;
+  }
+  .services__panel-mobile-image :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .services__panel {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    border-top: 1px solid var(--color-paper-100);
+  }
+  .services__panel:first-child {
+    border-top: none;
+  }
+
+  .services__panel-index {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--color-navy-600);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+  .services__panel-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h3);
+    color: var(--color-ink-900);
+    margin-bottom: 1rem;
+  }
+  .services__panel-desc {
+    max-width: 55ch;
+    color: var(--color-ink-600);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .services__panel-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .services__panel-bullets li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--color-ink-900);
+    font-size: 0.98rem;
+  }
+  .services__panel-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--color-lime-500);
+    transform: rotate(45deg);
+  }
+
+  @media (min-width: 900px) {
+    .services__layout {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .services__media {
+      display: block;
+      position: sticky;
+      top: 6rem;
+      align-self: start;
+      aspect-ratio: 4 / 5;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      height: fit-content;
+    }
+    .services__media-item {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.6s var(--ease-hinge);
+    }
+    .services__media-item.is-active {
+      opacity: 1;
+    }
+    .services__media-item :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .services__panel-mobile-image {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { ScrollTrigger, initGsap, prefersReducedMotion } from '../lib/motion';
+
+  if (!prefersReducedMotion() && window.matchMedia('(min-width: 900px)').matches) {
+    initGsap();
+    const panels = document.querySelectorAll<HTMLElement>('[data-service-panel]');
+    const mediaItems = document.querySelectorAll<HTMLElement>('[data-media-item]');
+
+    panels.forEach((panel) => {
+      const id = panel.dataset.servicePanel;
+      ScrollTrigger.create({
+        trigger: panel,
+        start: 'top 55%',
+        end: 'bottom 55%',
+        onEnter: () => setActive(id),
+        onEnterBack: () => setActive(id),
+      });
+    });
+
+    function setActive(id: string | undefined) {
+      mediaItems.forEach((item) => {
+        item.classList.toggle('is-active', item.dataset.mediaItem === id);
+      });
+    }
+  }
+</script>

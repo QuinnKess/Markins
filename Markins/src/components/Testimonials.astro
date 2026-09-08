@@ -1,0 +1,261 @@
+---
+import { testimonials } from '../lib/testimonials';
+---
+
+<section
+  class="testimonials"
+  id="testimonials"
+  aria-label="Client reviews"
+  itemscope
+  itemtype="https://schema.org/LocalBusiness"
+>
+  <meta itemprop="name" content="Markins Development Group, LLC" />
+  <div class="testimonials__header">
+    <p class="testimonials__eyebrow">Client reviews</p>
+    <h2 class="testimonials__heading">Ask the people whose kitchens we finished.</h2>
+  </div>
+
+  <div class="testimonials__viewport">
+    <div class="testimonials__track" data-testimonial-track role="group" aria-label="Client reviews carousel">
+      {
+        testimonials.map((t, i) => (
+          <figure
+            class="tcard"
+            data-testimonial-card
+            aria-hidden={i === 0 ? 'false' : 'true'}
+            itemprop="review"
+            itemscope
+            itemtype="https://schema.org/Review"
+          >
+            <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating" class="tcard__stars">
+              <meta itemprop="worstRating" content="1" />
+              <meta itemprop="bestRating" content="5" />
+              <span itemprop="ratingValue" style="display:none">{t.rating}</span>
+              {Array.from({ length: 5 }).map((_, s) => (
+                <span aria-hidden="true" class:list={['tcard__star', { 'is-filled': s < t.rating }]}>
+                  ★
+                </span>
+              ))}
+            </div>
+            <blockquote itemprop="reviewBody" class="tcard__quote">“{t.quote}”</blockquote>
+            <figcaption class="tcard__meta">
+              <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+                <span itemprop="name" class="tcard__name">{t.name}</span>
+              </span>
+              <span class="tcard__detail">{t.neighborhood} · {t.project}</span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="testimonials__controls">
+    <button class="testimonials__arrow" data-testimonial-prev aria-label="Previous review">‹</button>
+    <div class="testimonials__dots" role="tablist" aria-label="Choose a review">
+      {
+        testimonials.map((_, i) => (
+          <button
+            class="testimonials__dot"
+            data-testimonial-dot={i}
+            role="tab"
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-label={`Show review ${i + 1}`}
+          />
+        ))
+      }
+    </div>
+    <button class="testimonials__arrow" data-testimonial-next aria-label="Next review">›</button>
+  </div>
+</section>
+
+<style>
+  .testimonials {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: var(--color-paper-50);
+  }
+
+  .testimonials__header {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+  .testimonials__eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-navy-600);
+    margin-bottom: 1rem;
+  }
+  .testimonials__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    max-width: 22ch;
+    color: var(--color-ink-900);
+  }
+
+  .testimonials__viewport {
+    max-width: 900px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+    overflow: hidden;
+  }
+
+  .testimonials__track {
+    position: relative;
+    min-height: 260px;
+  }
+
+  .tcard {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.5s var(--ease-hinge), transform 0.5s var(--ease-hinge);
+  }
+  .tcard[aria-hidden='false'] {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: relative;
+  }
+
+  .tcard__stars {
+    display: flex;
+    gap: 0.15rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+  }
+  .tcard__star {
+    color: var(--color-paper-100);
+  }
+  .tcard__star.is-filled {
+    color: var(--color-lime-500);
+  }
+
+  .tcard__quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+    line-height: 1.4;
+    color: var(--color-ink-900);
+    margin-bottom: 1.5rem;
+  }
+
+  .tcard__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .tcard__name {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: var(--color-navy-800);
+  }
+  .tcard__detail {
+    font-size: 0.85rem;
+    color: var(--color-ink-600);
+  }
+
+  .testimonials__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .testimonials__arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-paper-100);
+    background: white;
+    font-size: 1.3rem;
+    color: var(--color-navy-800);
+    cursor: pointer;
+  }
+  .testimonials__arrow:hover {
+    border-color: var(--color-navy-600);
+  }
+  .testimonials__dots {
+    display: flex;
+  }
+  .testimonials__dot {
+    /* Visual dot stays small; the button's own box is the real 44px tap target
+       so touch/pointer users get enough room without a bigger dot on screen. */
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .testimonials__dot::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-paper-100);
+    transition: width 0.3s var(--ease-hinge), border-radius 0.3s var(--ease-hinge), background-color 0.3s var(--ease-hinge);
+  }
+  .testimonials__dot[aria-selected='true']::before {
+    background: var(--color-navy-600);
+    width: 22px;
+    border-radius: 4px;
+  }
+</style>
+
+<script>
+  const track = document.querySelector<HTMLElement>('[data-testimonial-track]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-testimonial-card]'));
+  const dots = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-testimonial-dot]'));
+  const prevBtn = document.querySelector<HTMLButtonElement>('[data-testimonial-prev]');
+  const nextBtn = document.querySelector<HTMLButtonElement>('[data-testimonial-next]');
+
+  if (track && cards.length) {
+    let index = 0;
+    let timer: number | undefined;
+
+    function show(i: number) {
+      index = (i + cards.length) % cards.length;
+      cards.forEach((c, ci) => c.setAttribute('aria-hidden', ci === index ? 'false' : 'true'));
+      dots.forEach((d, di) => d.setAttribute('aria-selected', di === index ? 'true' : 'false'));
+    }
+
+    function restartAutoplay() {
+      window.clearInterval(timer);
+      timer = window.setInterval(() => show(index + 1), 7000);
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        show(i);
+        restartAutoplay();
+      });
+    });
+    prevBtn?.addEventListener('click', () => {
+      show(index - 1);
+      restartAutoplay();
+    });
+    nextBtn?.addEventListener('click', () => {
+      show(index + 1);
+      restartAutoplay();
+    });
+
+    track.addEventListener('mouseenter', () => window.clearInterval(timer));
+    track.addEventListener('mouseleave', restartAutoplay);
+    track.addEventListener('focusin', () => window.clearInterval(timer));
+    track.addEventListener('focusout', restartAutoplay);
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    show(0);
+    if (!reduceMotion) restartAutoplay();
+  }
+</script>

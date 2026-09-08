@@ -1,0 +1,150 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '../lib/projects';
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+const detailShot = project.gallery[1] ?? project.hero;
+---
+
+<article class:list={['pcard', `pcard--${project.size}`]} data-reveal>
+  <a href={`/projects/${project.slug}`} class="pcard__link" data-hover-swap>
+    <div class="pcard__media">
+      <Image
+        src={project.hero}
+        alt={`${project.title} — ${project.category.toLowerCase()} in ${project.neighborhood}`}
+        width={900}
+        height={1000}
+        loading="lazy"
+        class="pcard__img pcard__img--a"
+      />
+      <Image
+        src={detailShot}
+        alt=""
+        width={900}
+        height={1000}
+        loading="lazy"
+        class="pcard__img pcard__img--b"
+      />
+      <span class="pcard__scrim" aria-hidden="true"></span>
+    </div>
+    <div class="pcard__body">
+      <p class="pcard__tag">{project.category} · {project.neighborhood}</p>
+      <h3 class="pcard__title">{project.title}</h3>
+    </div>
+  </a>
+</article>
+
+<style>
+  .pcard {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--color-navy-950);
+  }
+
+  .pcard--lg {
+    grid-column: span 12;
+  }
+  .pcard--md {
+    grid-column: span 12;
+  }
+  .pcard--sm {
+    grid-column: span 12;
+  }
+
+  @media (min-width: 700px) {
+    .pcard--lg {
+      grid-column: span 7;
+    }
+    .pcard--md {
+      grid-column: span 5;
+    }
+    .pcard--sm {
+      grid-column: span 4;
+    }
+  }
+
+  .pcard__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  .pcard__media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    /* Establishes its own stacking context so .pcard__img--a's z-index:1 (needed
+       for the hover crossfade) is trapped in here instead of leaking out and
+       painting on top of the sibling .pcard__body caption below. */
+    z-index: 0;
+  }
+  .pcard--lg .pcard__media {
+    aspect-ratio: 16 / 11;
+  }
+
+  .pcard__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease-hinge), opacity 0.5s var(--ease-hinge);
+  }
+
+  .pcard__img--a {
+    position: relative;
+    z-index: 1;
+  }
+  .pcard__img--b {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pcard__link:hover .pcard__media :global(img),
+    .pcard__link:focus-visible .pcard__media :global(img) {
+      transform: scale(1.05);
+    }
+    .pcard__link:hover .pcard__img--a,
+    .pcard__link:focus-visible .pcard__img--a {
+      opacity: 0;
+    }
+    .pcard__link:hover .pcard__img--b,
+    .pcard__link:focus-visible .pcard__img--b {
+      opacity: 1;
+    }
+  }
+
+  .pcard__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(17, 26, 74, 0) 45%, rgba(17, 26, 74, 0.85) 100%);
+  }
+
+  .pcard__body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.5rem;
+    color: white;
+  }
+  .pcard__tag {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-lime-300);
+    margin-bottom: 0.4rem;
+  }
+  .pcard__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 1.5rem);
+  }
+</style>

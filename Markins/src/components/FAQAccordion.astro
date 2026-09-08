@@ -1,0 +1,132 @@
+---
+import { faqs } from '../lib/faq';
+---
+
+<section class="faq" id="faq" aria-label="Frequently asked questions">
+  <div class="faq__header">
+    <p class="faq__eyebrow">Questions</p>
+    <h2 class="faq__heading">Answers before you have to ask.</h2>
+  </div>
+
+  <div class="faq__list">
+    {
+      faqs.map((item, i) => (
+        <details class="faq__item" name="faq-group" open={i === 0}>
+          <summary class="faq__question">
+            <span>{item.question}</span>
+            <span class="faq__icon" aria-hidden="true" />
+          </summary>
+          <div class="faq__answer" set:html={item.answer} />
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: var(--color-paper-50);
+  }
+  .faq__header {
+    max-width: 900px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+  .faq__eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-navy-600);
+    margin-bottom: 1rem;
+  }
+  .faq__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    color: var(--color-ink-900);
+  }
+
+  .faq__list {
+    max-width: 900px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+  }
+
+  .faq__item {
+    border-top: 1px solid var(--color-paper-100);
+  }
+  .faq__item:last-child {
+    border-bottom: 1px solid var(--color-paper-100);
+  }
+
+  .faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--color-ink-900);
+    list-style: none;
+  }
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    position: relative;
+  }
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    background: var(--color-navy-600);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .faq__icon::before {
+    width: 14px;
+    height: 2px;
+  }
+  .faq__icon::after {
+    width: 2px;
+    height: 14px;
+    transition: transform 0.3s var(--ease-hinge);
+  }
+  .faq__item[open] .faq__icon::after {
+    transform: translate(-50%, -50%) rotate(90deg) scale(0);
+  }
+
+  .faq__answer {
+    padding-bottom: 1.75rem;
+    max-width: 65ch;
+    color: var(--color-ink-600);
+    line-height: 1.65;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .faq__item > .faq__answer {
+      animation: faq-in 0.35s var(--ease-hinge);
+    }
+  }
+  @keyframes faq-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="g" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#2B3A8F" />
+      <stop offset="55%" stop-color="#4FB3E8" />
+      <stop offset="100%" stop-color="#8FC31F" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="#111A4A" />
+  <text
+    x="50"
+    y="72"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-weight="800"
+    font-size="66"
+    fill="url(#g)">M</text
+  >
+</svg>

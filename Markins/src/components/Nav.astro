@@ -1,0 +1,309 @@
+---
+import Logo from './Logo.astro';
+import Button from './Button.astro';
+
+interface Props {
+  /**
+   * Pages with no dark hero behind the nav (project detail, privacy, thank-you, 404)
+   * need the light/solid nav styling from the first frame — otherwise the
+   * transparent-over-hero white text is unreadable against a plain light page.
+   */
+  solid?: boolean;
+}
+const { solid = false } = Astro.props;
+
+const links = [
+  { href: '#services', label: 'Services' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#process', label: 'Process' },
+  { href: '#testimonials', label: 'Reviews' },
+  { href: '#faq', label: 'FAQ' },
+];
+---
+
+<header class:list={['site-nav', { 'is-scrolled': solid }]} id="site-nav" data-nav-solid={solid ? 'true' : 'false'}>
+  <nav class="nav-inner" aria-label="Primary">
+    <a href="#top" class="nav-logo-link">
+      {
+        solid ? (
+          <Logo variant="full" theme="light-bg" class="nav-logo" />
+        ) : (
+          <>
+            <span class="nav-logo-slot nav-logo-slot--dark">
+              <Logo variant="full" theme="dark-bg" class="nav-logo" />
+            </span>
+            <span class="nav-logo-slot nav-logo-slot--light">
+              <Logo variant="full" theme="light-bg" class="nav-logo" />
+            </span>
+          </>
+        )
+      }
+    </a>
+
+    <ul class="nav-links">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="nav-cta">
+      <a class="nav-tel" href="tel:+12158348683">215-834-8683</a>
+      <Button href="#quote" variant="primary" class="nav-cta-btn">Request a Quote</Button>
+    </div>
+
+    <button
+      class="nav-toggle"
+      id="nav-toggle"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+    >
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+    <ul class="mobile-links">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} class="mobile-link">
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mobile-footer">
+      <a href="tel:+12158348683" class="mobile-tel">215-834-8683</a>
+      <Button href="#quote" variant="primary" class="mobile-cta">Request a Quote</Button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    transition: background-color 0.4s var(--ease-hinge), box-shadow 0.4s var(--ease-hinge);
+  }
+
+  .site-nav.is-scrolled {
+    background: rgba(247, 247, 244, 0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 1px 0 rgba(20, 22, 31, 0.08);
+  }
+
+  .nav-inner {
+    max-width: 1440px;
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+  }
+
+  .nav-logo-link {
+    display: inline-flex;
+  }
+
+  .nav-logo-slot--light {
+    display: none;
+  }
+  .site-nav.is-scrolled .nav-logo-slot--dark {
+    display: none;
+  }
+  .site-nav.is-scrolled .nav-logo-slot--light {
+    display: inline-flex;
+  }
+
+  .nav-links {
+    display: none;
+    gap: 2rem;
+    list-style: none;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    padding-block: 0.5rem;
+    position: relative;
+  }
+  .site-nav.is-scrolled .nav-links a {
+    color: var(--color-ink-900);
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: 0;
+    height: 2px;
+    background: currentColor;
+    transition: right 0.3s var(--ease-hinge);
+  }
+  .nav-links a:hover::after {
+    right: 0;
+  }
+
+  .nav-cta {
+    display: none;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .nav-tel {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .site-nav.is-scrolled .nav-tel {
+    color: var(--color-ink-900);
+  }
+
+  .site-nav:not(.is-scrolled) .nav-cta-btn {
+    background: white;
+    color: var(--color-navy-800);
+  }
+  .site-nav:not(.is-scrolled) .nav-cta-btn:hover {
+    background: var(--color-paper-100);
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .nav-toggle-bar {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: white;
+    margin-inline: auto;
+    transition: background-color 0.3s var(--ease-hinge);
+  }
+  .site-nav.is-scrolled .nav-toggle-bar {
+    background: var(--color-ink-900);
+  }
+
+  @media (min-width: 900px) {
+    .nav-links {
+      display: flex;
+    }
+    .nav-cta {
+      display: flex;
+    }
+    .nav-toggle {
+      display: none;
+    }
+  }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: var(--color-navy-950);
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .mobile-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .mobile-link {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 8vw, 3rem);
+    color: white;
+    text-decoration: none;
+  }
+
+  .mobile-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+  .mobile-tel {
+    color: var(--color-lime-300);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+  }
+
+  @media (min-width: 900px) {
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  const nav = document.getElementById('site-nav');
+  const isSolid = nav?.dataset.navSolid === 'true';
+  if (nav && !isSolid) {
+    const onScroll = () => {
+      nav.classList.toggle('is-scrolled', window.scrollY > 40);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  const toggle = document.getElementById('nav-toggle') as HTMLButtonElement | null;
+  const menu = document.getElementById('mobile-menu') as HTMLElement | null;
+
+  if (toggle && menu) {
+    const closeMenu = () => {
+      menu.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+      document.body.style.overflow = '';
+      toggle.focus();
+    };
+    const openMenu = () => {
+      menu.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+      document.body.style.overflow = 'hidden';
+      const firstLink = menu.querySelector('a');
+      (firstLink as HTMLElement | null)?.focus();
+    };
+
+    toggle.addEventListener('click', () => {
+      if (menu.hidden) openMenu();
+      else closeMenu();
+    });
+
+    menu.addEventListener('click', (e) => {
+      if (e.target instanceof HTMLAnchorElement) closeMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.hidden) closeMenu();
+    });
+  }
+</script>

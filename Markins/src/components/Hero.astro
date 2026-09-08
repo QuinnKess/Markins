@@ -1,0 +1,223 @@
+---
+import { Image } from 'astro:assets';
+import heroPosterSrc from '../assets/images/hero-poster.jpg';
+import Button from './Button.astro';
+import GradientCanvas from './GradientCanvas.astro';
+---
+
+<!--
+  No usable hero video: the only b-roll on hand (hero.mp4) turned out to be a
+  Universal Marble & Granite promo reel with their branding baked in around 0:02 —
+  confirmed by sampling frames, not just the filename. See ASSETS-TODO.md. Until the
+  client shoots real Markins footage, the hero is a curated still with a slow Ken
+  Burns drift, backed by the animated gradient canvas as a safety net if the image
+  is slow to load.
+-->
+<section class="hero" id="hero" aria-label="Markins Development Group">
+  <div class="hero__media">
+    <GradientCanvas class="hero__canvas" />
+    <div class="hero__image-wrap" data-hero-image-wrap>
+      <Image
+        class="hero__image"
+        src={heroPosterSrc}
+        alt="Renovated kitchen with a marble waterfall island, built by Markins Development Group"
+        width={1920}
+        height={1281}
+        format="avif"
+        quality={78}
+        priority
+      />
+    </div>
+    <div class="hero__scrim" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero__content">
+    <h1 class="hero__headline" data-hero-headline>
+      <span class="hero__line"><span class="hero__line-inner">Transforming Spaces.</span></span>
+      <span class="hero__line"><span class="hero__line-inner">Creating Value.</span></span>
+    </h1>
+    <p class="hero__subhead" data-hero-fade>
+      Philadelphia design-build for kitchen &amp; bath, whole-home renovation, and new
+      construction — run the way a serious firm runs a job site.
+    </p>
+    <div class="hero__actions" data-hero-fade>
+      <Button href="#quote" variant="primary" magnetic>Request a Quote</Button>
+      <Button href="#projects" variant="ghost-light" magnetic>See Our Work</Button>
+    </div>
+  </div>
+
+  <a href="#intro" class="hero__scroll-cue" data-hero-fade aria-label="Scroll to learn more">
+    <span class="hero__scroll-line" data-scroll-line></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    background: var(--color-navy-950);
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__canvas {
+    z-index: 0;
+  }
+
+  .hero__image-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.06);
+    will-change: transform;
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      180deg,
+      rgba(17, 26, 74, 0.4) 0%,
+      rgba(17, 26, 74, 0.18) 35%,
+      rgba(17, 26, 74, 0.78) 100%
+    );
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 3;
+    padding: clamp(6rem, 14vw, 9rem) clamp(1.25rem, 5vw, 3.5rem) clamp(4rem, 8vw, 6rem);
+    max-width: 1440px;
+    margin-inline: auto;
+    width: 100%;
+    color: white;
+  }
+
+  .hero__headline {
+    font-family: var(--font-display);
+    font-weight: 480;
+    font-size: var(--text-hero);
+    line-height: var(--text-hero--line-height);
+    letter-spacing: -0.01em;
+    max-width: 16ch;
+  }
+
+  .hero__line {
+    display: block;
+    overflow: hidden;
+  }
+  .hero__line-inner {
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+  }
+
+  .hero__subhead {
+    margin-top: 1.75rem;
+    max-width: 46ch;
+    font-size: var(--text-lede);
+    line-height: var(--text-lede--line-height);
+    color: rgba(247, 247, 244, 0.88);
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .hero__actions {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .hero__scroll-cue {
+    position: relative;
+    z-index: 3;
+    align-self: center;
+    margin-bottom: 2rem;
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+
+  .hero__scroll-line {
+    display: block;
+    width: 1.5px;
+    height: 32px;
+    background: linear-gradient(180deg, white, transparent);
+    transform-origin: top center;
+  }
+
+  @media (min-width: 700px) {
+    .hero__scroll-cue {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, runAfterIntro, prefersReducedMotion } from '../lib/motion';
+
+  const hero = document.getElementById('hero');
+  if (hero) {
+    const lines = hero.querySelectorAll<HTMLElement>('.hero__line-inner');
+    const fadeEls = hero.querySelectorAll<HTMLElement>('[data-hero-fade]');
+    const scrollLine = hero.querySelector<HTMLElement>('[data-scroll-line]');
+    const image = hero.querySelector<HTMLElement>('.hero__image');
+
+    const reveal = () => {
+      if (prefersReducedMotion()) {
+        gsap.set(lines, { y: 0, opacity: 1 });
+        gsap.set(fadeEls, { y: 0, opacity: 1 });
+        return;
+      }
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+      tl.to(lines, { y: 0, opacity: 1, duration: 0.9, stagger: 0.09 })
+        .to(fadeEls, { y: 0, opacity: 1, duration: 0.7, stagger: 0.08 }, '-=0.45');
+
+      if (scrollLine) {
+        gsap.to(scrollLine, {
+          scaleY: 0.4,
+          repeat: -1,
+          yoyo: true,
+          duration: 1.6,
+          ease: 'sine.inOut',
+          transformOrigin: 'top center',
+          delay: 1.2,
+        });
+      }
+
+      // Slow Ken Burns drift on the static hero photo — the closest a still image
+      // gets to the "documentary footage breathing" feel without real video.
+      if (image) {
+        gsap.fromTo(
+          image,
+          { scale: 1.06 },
+          { scale: 1, duration: 18, ease: 'sine.out' }
+        );
+      }
+    };
+
+    runAfterIntro(reveal);
+  }
+</script>

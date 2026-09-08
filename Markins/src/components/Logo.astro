@@ -1,0 +1,87 @@
+---
+interface Props {
+  /** Full lockup (mark + wordmark) or just the "M" mark. */
+  variant?: 'full' | 'mark';
+  /** Use light text for dark backgrounds (nav on hero, footer). */
+  theme?: 'dark-bg' | 'light-bg';
+  class?: string;
+}
+
+const { variant = 'full', theme = 'light-bg', class: className = '' } = Astro.props;
+const wordColor = theme === 'dark-bg' ? '#F7F7F4' : '#14161F';
+const subColor = theme === 'dark-bg' ? '#C7E86B' : '#4a4d5c';
+---
+
+<!--
+  Recreated from the client's business card (navy -> lime gradient "M" monogram) as
+  inline SVG rather than a raster crop, so it stays crisp at every size and can be
+  recolored per-theme. TODO: swap for the client's vector logo if/when a designer
+  delivers one — this is a faithful placeholder, not a locked final asset.
+-->
+<span class:list={['markins-logo', className]}>
+  <svg
+    class="mark"
+    width={variant === 'full' ? 44 : 36}
+    height={variant === 'full' ? 44 : 36}
+    viewBox="0 0 100 100"
+    role="img"
+    aria-label="Markins Development Group"
+  >
+    <defs>
+      <linearGradient id="mark-grad" x1="10%" y1="0%" x2="90%" y2="100%">
+        <stop offset="0%" stop-color="#2B3A8F" />
+        <stop offset="55%" stop-color="#4FB3E8" />
+        <stop offset="100%" stop-color="#8FC31F" />
+      </linearGradient>
+    </defs>
+    <text
+      x="50"
+      y="78"
+      text-anchor="middle"
+      font-family="'Poppins', system-ui, sans-serif"
+      font-weight="800"
+      font-size="92"
+      fill="url(#mark-grad)">M</text
+    >
+  </svg>
+  {
+    variant === 'full' && (
+      <span class="word" style={`color:${wordColor}`}>
+        <span class="wordmark">Markins</span>
+        <span class="subline" style={`color:${subColor}`}>
+          Development Group, LLC
+        </span>
+      </span>
+    )
+  }
+</span>
+
+<style>
+  .markins-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    line-height: 1;
+  }
+  .mark {
+    flex: none;
+  }
+  .word {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .wordmark {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+  .subline {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>

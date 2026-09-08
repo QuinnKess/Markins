@@ -1,0 +1,164 @@
+---
+const neighborhoods = [
+  'Port Richmond',
+  'Fishtown',
+  'Kensington',
+  'Northern Liberties',
+  'South Philadelphia',
+  'Manayunk',
+];
+const counties = ['Philadelphia County', 'Bucks County', 'Montgomery County', 'Delaware County'];
+---
+
+<section class="service-area" id="service-area" aria-label="Service area">
+  <div class="service-area__inner">
+    <div class="service-area__copy">
+      <p class="service-area__eyebrow">Where we work</p>
+      <h2 class="service-area__heading">Philadelphia, and the counties around it.</h2>
+      <p class="service-area__intro">
+        Based in Port Richmond, working across the city and into the suburbs. If you're
+        not sure whether your address is in range, ask — it usually is.
+      </p>
+
+      <div class="service-area__lists">
+        <div>
+          <p class="service-area__list-label">Philadelphia neighborhoods</p>
+          <ul>
+            {neighborhoods.map((n) => <li>{n}</li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="service-area__list-label">Counties served</p>
+          <ul>
+            {counties.map((c) => <li>{c}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <address class="service-area__address">
+        Markins Development Group, LLC<br />
+        2780 Jasper Street, Philadelphia, PA 19134
+      </address>
+    </div>
+
+    <div class="service-area__graphic" aria-hidden="true">
+      <svg viewBox="0 0 400 400" role="presentation">
+        <defs>
+          <linearGradient id="area-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2B3A8F" />
+            <stop offset="100%" stop-color="#7FB420" />
+          </linearGradient>
+        </defs>
+        <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(43,58,143,0.12)" stroke-width="1" />
+        <circle cx="200" cy="200" r="130" fill="none" stroke="rgba(43,58,143,0.16)" stroke-width="1" />
+        <circle cx="200" cy="200" r="80" fill="none" stroke="rgba(43,58,143,0.22)" stroke-width="1" />
+        {
+          Array.from({ length: 5 }).map((_, i) => (
+            <line
+              x1={200 + Math.cos((i * 36 * Math.PI) / 180) * 30}
+              y1={200 + Math.sin((i * 36 * Math.PI) / 180) * 30}
+              x2={200 + Math.cos((i * 36 * Math.PI) / 180) * 180}
+              y2={200 + Math.sin((i * 36 * Math.PI) / 180) * 180}
+              stroke="rgba(79,179,232,0.18)"
+              stroke-width="1"
+            />
+          ))
+        }
+        <circle cx="200" cy="200" r="10" fill="url(#area-grad)" />
+        <circle cx="200" cy="200" r="18" fill="none" stroke="url(#area-grad)" stroke-width="1.5" opacity="0.5" />
+        <text x="200" y="240" text-anchor="middle" font-family="Poppins, sans-serif" font-size="12" font-weight="600" fill="#1E2A6E">
+          Port Richmond
+        </text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-area {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: white;
+  }
+  .service-area__inner {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .service-area__inner {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 4rem;
+    }
+  }
+
+  .service-area__eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-navy-600);
+    margin-bottom: 1rem;
+  }
+  .service-area__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    color: var(--color-ink-900);
+    margin-bottom: 1.25rem;
+    max-width: 18ch;
+  }
+  .service-area__intro {
+    color: var(--color-ink-600);
+    max-width: 50ch;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+  }
+
+  .service-area__lists {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .service-area__list-label {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-navy-600);
+    margin-bottom: 0.9rem;
+  }
+  .service-area__lists ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .service-area__lists li {
+    color: var(--color-ink-900);
+    font-size: 0.95rem;
+  }
+
+  .service-area__address {
+    font-style: normal;
+    font-size: 0.9rem;
+    color: var(--color-ink-600);
+    line-height: 1.6;
+    border-top: 1px solid var(--color-paper-100);
+    padding-top: 1.5rem;
+  }
+
+  .service-area__graphic {
+    display: flex;
+    justify-content: center;
+  }
+  .service-area__graphic svg {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+  }
+</style>

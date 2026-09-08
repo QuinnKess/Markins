@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Button from '../components/Button.astro';
+---
+
+<BaseLayout
+  title="Thank You"
+  description="Thanks for reaching out to Markins Development Group — we'll be in touch soon."
+  noindex={true}
+>
+  <Nav solid />
+  <main id="main">
+    <section class="thanks">
+      <p class="thanks__eyebrow">Message sent</p>
+      <h1 class="thanks__heading">Thanks — we've got it.</h1>
+      <p class="thanks__body">
+        We'll review your project details and follow up within one business day to schedule
+        a walkthrough. If it's urgent, call Marjus directly at
+        <a href="tel:+12158348683">215-834-8683</a>.
+      </p>
+      <Button href="/" variant="primary">Back to home</Button>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .thanks {
+    min-height: 70vh;
+    max-width: 640px;
+    margin-inline: auto;
+    padding: clamp(8rem, 18vw, 11rem) clamp(1.25rem, 5vw, 3rem) 6rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .thanks__eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-navy-600);
+    margin-bottom: 1rem;
+  }
+  .thanks__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    margin-bottom: 1.25rem;
+  }
+  .thanks__body {
+    color: var(--color-ink-600);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+  .thanks__body a {
+    color: var(--color-navy-600);
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,108 @@
+---
+// First-visit-only intro (gated by sessionStorage): the "M" mark scales in, then a
+// skewed navy panel slides off-screen along the brand's diagonal to reveal the page.
+// ≤1.2s total, skippable by click/keypress, and entirely skipped for repeat visits,
+// prefers-reduced-motion, or if JS fails to run (the loader is JS-shown, not JS-hidden,
+// so a no-JS visitor never sees it get stuck).
+---
+
+<div class="page-loader" id="page-loader" aria-hidden="true">
+  <div class="page-loader__panel"></div>
+  <svg class="page-loader__mark" viewBox="0 0 100 100" role="presentation">
+    <defs>
+      <linearGradient id="loader-grad" x1="10%" y1="0%" x2="90%" y2="100%">
+        <stop offset="0%" stop-color="#4FB3E8" />
+        <stop offset="100%" stop-color="#8FC31F" />
+      </linearGradient>
+    </defs>
+    <text
+      x="50"
+      y="78"
+      text-anchor="middle"
+      font-family="'Poppins', system-ui, sans-serif"
+      font-weight="800"
+      font-size="92"
+      fill="url(#loader-grad)">M</text
+    >
+  </svg>
+</div>
+
+<style>
+  .page-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--color-navy-950);
+  }
+  .page-loader.is-active {
+    display: flex;
+  }
+  .page-loader__panel {
+    position: absolute;
+    inset: -30% -20%;
+    background: var(--color-navy-950);
+    transform: skewX(-10deg) translateX(0%);
+    will-change: transform;
+  }
+  .page-loader__mark {
+    position: relative;
+    width: clamp(64px, 12vw, 120px);
+    height: clamp(64px, 12vw, 120px);
+    opacity: 0;
+    transform: scale(0.8);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const loader = document.getElementById('page-loader');
+  const mark = loader?.querySelector<SVGElement>('.page-loader__mark');
+  const panel = loader?.querySelector<HTMLElement>('.page-loader__panel');
+
+  function finish() {
+    if (!loader) return;
+    loader.classList.remove('is-active');
+    loader.style.display = 'none';
+    try {
+      sessionStorage.setItem('markins-loaded', '1');
+    } catch {
+      /* private-mode storage can throw; the intro just replays, which is harmless */
+    }
+    (window as unknown as { __markinsIntroDone?: boolean }).__markinsIntroDone = true;
+    window.dispatchEvent(new CustomEvent('markins:loaded'));
+  }
+
+  const alreadySeen = (() => {
+    try {
+      return sessionStorage.getItem('markins-loaded') === '1';
+    } catch {
+      return false;
+    }
+  })();
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (alreadySeen || reduceMotion || !loader || !mark || !panel) {
+    finish();
+  } else {
+    loader.classList.add('is-active');
+    const tl = gsap.timeline({
+      defaults: { ease: 'expo.out' },
+      onComplete: finish,
+    });
+    tl.to(mark, { opacity: 1, scale: 1, duration: 0.45 })
+      .to(mark, { opacity: 0, scale: 1.05, duration: 0.25 }, '+=0.15')
+      .to(panel, { xPercent: 140, duration: 0.5 }, '<');
+
+    const skip = () => {
+      if (tl.progress() < 1) tl.progress(1);
+    };
+    loader.addEventListener('click', skip);
+    window.addEventListener('keydown', skip, { once: true });
+  }
+</script>

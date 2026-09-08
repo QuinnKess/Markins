@@ -1,0 +1,170 @@
+---
+import Logo from './Logo.astro';
+
+const year = new Date().getFullYear();
+
+const links = [
+  { href: '#services', label: 'Services' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#process', label: 'Process' },
+  { href: '#testimonials', label: 'Reviews' },
+  { href: '#service-area', label: 'Service Area' },
+  { href: '#faq', label: 'FAQ' },
+  { href: '#quote', label: 'Request a Quote' },
+];
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <Logo variant="full" theme="dark-bg" />
+        <p class="footer-tagline">Transforming Spaces. Creating Value.</p>
+        <div class="footer-social">
+          <!-- TODO: confirm with client — add real social profile URLs -->
+          <a href="#" aria-label="Markins on Instagram">Instagram</a>
+          <a href="#" aria-label="Markins on Facebook">Facebook</a>
+        </div>
+      </div>
+
+      <nav class="footer-links" aria-label="Footer">
+        <p class="footer-heading">Site</p>
+        <ul>
+          {
+            links.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="footer-contact">
+        <p class="footer-heading">Contact</p>
+        <address>
+          2780 Jasper Street<br />
+          Philadelphia, PA 19134<br />
+          Port Richmond
+        </address>
+        <a href="tel:+12158348683">215-834-8683 (Cell)</a>
+        <a href="tel:+12157393806">215-739-3806 (Office)</a>
+        <p class="footer-owner">Marjus Veliaj, Owner</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>
+        &copy; {year} Markins Development Group, LLC. All rights reserved.
+        <!-- TODO: confirm with client --> PA HIC License #PA000000.
+      </p>
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-navy-950);
+    color: rgba(247, 247, 244, 0.85);
+    padding-block: clamp(3rem, 6vw, 5rem) 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  .footer-top {
+    display: grid;
+    gap: 3rem;
+    grid-template-columns: 1fr;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(247, 247, 244, 0.12);
+  }
+
+  @media (min-width: 800px) {
+    .footer-top {
+      grid-template-columns: 1.4fr 1fr 1fr;
+    }
+  }
+
+  .footer-tagline {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: white;
+    margin-top: 1.25rem;
+    max-width: 22ch;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .footer-social a {
+    color: var(--color-lime-300);
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .footer-heading {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-sky-400);
+    margin-bottom: 1.25rem;
+  }
+
+  .footer-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .footer-links a {
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .footer-links a:hover {
+    color: white;
+  }
+
+  .footer-contact address {
+    font-style: normal;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .footer-contact a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .footer-owner {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: rgba(247, 247, 244, 0.6);
+  }
+
+  .footer-bottom {
+    padding-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: rgba(247, 247, 244, 0.55);
+  }
+  .footer-bottom a {
+    color: inherit;
+  }
+</style>

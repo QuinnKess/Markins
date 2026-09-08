@@ -1,0 +1,299 @@
+---
+import Button from './Button.astro';
+
+const projectTypes = ['Kitchen & Bath', 'Renovation', 'New Construction', 'Not sure yet'];
+const budgetRanges = ['Under $25k', '$25k–$50k', '$50k–$100k', '$100k–$250k', '$250k+'];
+---
+
+<section class="quote" id="quote" aria-label="Request a quote">
+  <div class="quote__inner">
+    <div class="quote__intro">
+      <p class="quote__eyebrow">Get started</p>
+      <h2 class="quote__heading">Tell us about your project.</h2>
+      <p class="quote__sub">
+        Fill this out and we'll follow up to schedule a walkthrough — usually within one
+        business day. Prefer to talk first?
+      </p>
+      <div class="quote__tel-group">
+        <a class="quote__tel" href="tel:+12158348683">
+          <span class="quote__tel-label">Marjus Veliaj (Cell)</span>
+          <span class="quote__tel-number">215-834-8683</span>
+        </a>
+        <a class="quote__tel" href="tel:+12157393806">
+          <span class="quote__tel-label">Office</span>
+          <span class="quote__tel-number">215-739-3806</span>
+        </a>
+      </div>
+    </div>
+
+    <form
+      class="quote__form"
+      name="quote-request"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="company"
+      action="/thank-you"
+      novalidate
+      data-quote-form
+    >
+      <input type="hidden" name="form-name" value="quote-request" />
+      <p class="quote__honeypot" aria-hidden="true">
+        <label>
+          Company
+          <input name="company" tabindex="-1" autocomplete="off" />
+        </label>
+      </p>
+
+      <div class="quote__grid">
+        <label class="quote__field">
+          <span>Name <em>*</em></span>
+          <input type="text" name="name" required autocomplete="name" />
+          <span class="quote__error" data-error-for="name">Please enter your name.</span>
+        </label>
+
+        <label class="quote__field">
+          <span>Email <em>*</em></span>
+          <input type="email" name="email" required autocomplete="email" />
+          <span class="quote__error" data-error-for="email">Please enter a valid email.</span>
+        </label>
+
+        <label class="quote__field">
+          <span>Phone <em>*</em></span>
+          <input type="tel" name="phone" required autocomplete="tel" pattern="^[\d\s()+.-]{7,}$" />
+          <span class="quote__error" data-error-for="phone">Please enter a valid phone number.</span>
+        </label>
+
+        <label class="quote__field">
+          <span>Project type <em>*</em></span>
+          <select name="project_type" required>
+            <option value="" selected disabled>Choose one</option>
+            {projectTypes.map((t) => <option value={t}>{t}</option>)}
+          </select>
+          <span class="quote__error" data-error-for="project_type">Please choose a project type.</span>
+        </label>
+
+        <label class="quote__field">
+          <span>Budget range</span>
+          <select name="budget_range">
+            <option value="" selected>Prefer not to say</option>
+            {budgetRanges.map((b) => <option value={b}>{b}</option>)}
+          </select>
+        </label>
+
+        <label class="quote__field">
+          <span>Project photos (optional)</span>
+          <input type="file" name="photos" accept="image/*" multiple />
+        </label>
+
+        <label class="quote__field quote__field--full">
+          <span>Tell us about the project <em>*</em></span>
+          <textarea name="message" rows="4" required></textarea>
+          <span class="quote__error" data-error-for="message">Tell us a little about the project.</span>
+        </label>
+      </div>
+
+      <p class="quote__disclaimer">
+        By submitting, you agree to be contacted by Markins Development Group about your
+        project. We don't share your information.
+      </p>
+
+      <Button type="submit" variant="primary" class="quote__submit">Request a Quote</Button>
+      <p class="quote__status" role="status" aria-live="polite" data-form-status></p>
+    </form>
+  </div>
+</section>
+
+<style>
+  .quote {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: white;
+  }
+  .quote__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+    display: grid;
+    gap: 3rem;
+  }
+
+  @media (min-width: 900px) {
+    .quote__inner {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 4rem;
+    }
+  }
+
+  .quote__eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-navy-600);
+    margin-bottom: 1rem;
+  }
+  .quote__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    color: var(--color-ink-900);
+    margin-bottom: 1.25rem;
+    max-width: 14ch;
+  }
+  .quote__sub {
+    color: var(--color-ink-600);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    max-width: 40ch;
+  }
+
+  .quote__tel-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .quote__tel {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 1rem 1.25rem;
+    border: 1.5px solid var(--color-paper-100);
+    border-radius: 0.75rem;
+    min-height: 44px;
+    justify-content: center;
+  }
+  .quote__tel:hover {
+    border-color: var(--color-navy-600);
+  }
+  .quote__tel-label {
+    font-size: 0.78rem;
+    color: var(--color-ink-600);
+  }
+  .quote__tel-number {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: var(--color-navy-800);
+    font-size: 1.1rem;
+  }
+
+  .quote__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .quote__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (min-width: 600px) {
+    .quote__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .quote__field--full {
+    grid-column: 1 / -1;
+  }
+
+  .quote__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-ink-900);
+  }
+  .quote__field em {
+    color: var(--color-navy-600);
+    font-style: normal;
+  }
+
+  .quote__field input,
+  .quote__field select,
+  .quote__field textarea {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--color-paper-100);
+    border-radius: 0.6rem;
+    background: var(--color-paper-50);
+    min-height: 44px;
+    color: var(--color-ink-900);
+  }
+  .quote__field textarea {
+    resize: vertical;
+  }
+  .quote__field input:focus,
+  .quote__field select:focus,
+  .quote__field textarea:focus {
+    border-color: var(--color-navy-600);
+  }
+
+  .quote__error {
+    display: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #b3261e;
+  }
+  .quote__field.has-error input,
+  .quote__field.has-error select,
+  .quote__field.has-error textarea {
+    border-color: #b3261e;
+  }
+  .quote__field.has-error .quote__error {
+    display: block;
+  }
+
+  .quote__disclaimer {
+    font-size: 0.8rem;
+    color: var(--color-ink-600);
+    margin-bottom: 1.5rem;
+    max-width: 55ch;
+  }
+
+  .quote__status {
+    margin-top: 1rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-navy-800);
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
+  if (form) {
+    const requiredFields = form.querySelectorAll<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >('[required]');
+
+    function validateField(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) {
+      const wrapper = field.closest<HTMLElement>('.quote__field');
+      const valid = field.checkValidity();
+      wrapper?.classList.toggle('has-error', !valid);
+      return valid;
+    }
+
+    requiredFields.forEach((field) => {
+      field.addEventListener('blur', () => validateField(field));
+    });
+
+    form.addEventListener('submit', (e) => {
+      let allValid = true;
+      requiredFields.forEach((field) => {
+        if (!validateField(field)) allValid = false;
+      });
+      if (!allValid) {
+        e.preventDefault();
+        const firstError = form.querySelector<HTMLElement>('.quote__field.has-error input, .quote__field.has-error select, .quote__field.has-error textarea');
+        firstError?.focus();
+      }
+    });
+  }
+</script>

@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="How Markins Development Group collects and uses information submitted through this website."
+>
+  <Nav solid />
+  <main id="main">
+    <article class="legal">
+      <h1>Privacy Policy</h1>
+      <p class="legal__updated">Last updated: September 2026</p>
+
+      <p>
+        Markins Development Group, LLC ("Markins," "we," "us") respects your privacy. This
+        page explains what information we collect through this website and how we use it.
+      </p>
+
+      <h2>Information we collect</h2>
+      <p>
+        When you submit the quote request form, we collect the information you provide:
+        name, email, phone number, project type, budget range, project details, and any
+        photos you choose to upload. We do not collect this information through any other
+        means on this site.
+      </p>
+
+      <h2>How we use it</h2>
+      <p>
+        We use the information you submit solely to respond to your inquiry, schedule a
+        walkthrough or consultation, and prepare an estimate. We do not sell or share your
+        information with third parties for marketing purposes.
+      </p>
+
+      <h2>Cookies &amp; analytics</h2>
+      <p>
+        <!-- TODO: confirm with client --> This site does not currently use tracking
+        cookies or third-party analytics. If that changes, this policy will be updated
+        accordingly.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about this policy can be directed to Marjus Veliaj at
+        <a href="tel:+12158348683">215-834-8683</a> or by mail at 2780 Jasper Street,
+        Philadelphia, PA 19134.
+      </p>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .legal {
+    max-width: 700px;
+    margin-inline: auto;
+    padding: clamp(8rem, 16vw, 11rem) clamp(1.25rem, 5vw, 3rem) 6rem;
+  }
+  .legal h1 {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    margin-bottom: 0.5rem;
+    color: var(--color-ink-900);
+  }
+  .legal__updated {
+    color: var(--color-ink-600);
+    font-size: 0.85rem;
+    margin-bottom: 2.5rem;
+  }
+  .legal h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-ink-900);
+  }
+  .legal p {
+    line-height: 1.7;
+    color: var(--color-ink-600);
+  }
+  .legal a {
+    color: var(--color-navy-600);
+    font-weight: 600;
+  }
+</style>

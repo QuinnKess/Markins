@@ -1,0 +1,179 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  imageA: ImageMetadata;
+  imageB: ImageMetadata;
+  labelA?: string;
+  labelB?: string;
+  altA: string;
+  altB: string;
+}
+
+const { imageA, imageB, labelA = 'Overview', labelB = 'Detail', altA, altB } = Astro.props;
+---
+
+<!--
+  A comparison slider between two real photos from the same job — not a literal
+  before/after (we don't have verified "before" shots for these projects), so it's
+  labeled Overview/Detail rather than making that claim. Fully keyboard operable.
+-->
+<div class="ba" data-ba-slider>
+  <div class="ba__frame">
+    <div class="ba__layer ba__layer--b">
+      <Image src={imageB} alt={altB} width={1400} height={1000} />
+    </div>
+    <div class="ba__layer ba__layer--a" data-ba-clip>
+      <Image src={imageA} alt={altA} width={1400} height={1000} />
+    </div>
+    <div
+      class="ba__handle"
+      data-ba-handle
+      role="slider"
+      tabindex="0"
+      aria-label={`Comparison slider between ${labelA} and ${labelB}`}
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="50"
+      aria-orientation="horizontal"
+    >
+      <span class="ba__handle-grip"></span>
+    </div>
+  </div>
+  <div class="ba__labels">
+    <span>{labelA}</span>
+    <span>{labelB}</span>
+  </div>
+</div>
+
+<style>
+  .ba {
+    width: 100%;
+  }
+  .ba__frame {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--color-navy-950);
+    touch-action: pan-y;
+  }
+  .ba__layer {
+    position: absolute;
+    inset: 0;
+  }
+  .ba__layer :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .ba__layer--a {
+    clip-path: inset(0 50% 0 0);
+  }
+
+  .ba__handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 3px;
+    background: white;
+    transform: translateX(-50%);
+    cursor: ew-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ba__handle-grip {
+    width: 40px;
+    height: 40px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(17, 26, 74, 0.35);
+  }
+  .ba__handle-grip::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    border-left: 2px solid var(--color-navy-800);
+    border-bottom: 2px solid var(--color-navy-800);
+    transform: rotate(45deg);
+  }
+
+  .ba__labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.85rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-ink-600);
+  }
+</style>
+
+<script>
+  function setupSlider(root: HTMLElement) {
+    const frame = root.querySelector<HTMLElement>('.ba__frame');
+    const clip = root.querySelector<HTMLElement>('[data-ba-clip]');
+    const handle = root.querySelector<HTMLElement>('[data-ba-handle]');
+    if (!frame || !clip || !handle) return;
+
+    let dragging = false;
+
+    function setPercent(pct: number) {
+      const clamped = Math.min(100, Math.max(0, pct));
+      clip!.style.clipPath = `inset(0 ${100 - clamped}% 0 0)`;
+      handle!.style.left = `${clamped}%`;
+      handle!.setAttribute('aria-valuenow', String(Math.round(clamped)));
+    }
+
+    function percentFromClientX(clientX: number) {
+      const rect = frame!.getBoundingClientRect();
+      return ((clientX - rect.left) / rect.width) * 100;
+    }
+
+    handle.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      handle.setPointerCapture(e.pointerId);
+    });
+    handle.addEventListener('pointerup', () => (dragging = false));
+    handle.addEventListener('pointercancel', () => (dragging = false));
+    handle.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      setPercent(percentFromClientX(e.clientX));
+    });
+
+    frame.addEventListener('pointerdown', (e) => {
+      if (e.target === handle || handle.contains(e.target as Node)) return;
+      setPercent(percentFromClientX(e.clientX));
+    });
+
+    handle.addEventListener('keydown', (e) => {
+      const current = parseFloat(handle.getAttribute('aria-valuenow') || '50');
+      if (e.key === 'ArrowLeft') {
+        setPercent(current - 5);
+        e.preventDefault();
+      } else if (e.key === 'ArrowRight') {
+        setPercent(current + 5);
+        e.preventDefault();
+      } else if (e.key === 'Home') {
+        setPercent(0);
+        e.preventDefault();
+      } else if (e.key === 'End') {
+        setPercent(100);
+        e.preventDefault();
+      }
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-ba-slider]').forEach(setupSlider);
+</script>

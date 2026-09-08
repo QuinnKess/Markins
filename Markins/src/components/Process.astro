@@ -1,0 +1,161 @@
+---
+const steps = [
+  {
+    title: 'Consult',
+    desc: 'We walk the space, talk through goals and budget, and tell you honestly what’s realistic.',
+  },
+  {
+    title: 'Design & Estimate',
+    desc: 'A written scope, a real timeline, and a line-item estimate — before anything is signed.',
+  },
+  {
+    title: 'Build',
+    desc: 'Your dedicated crew runs the job daily. Clean sites, scheduled check-ins, no disappearing acts.',
+  },
+  {
+    title: 'Handover',
+    desc: 'A final walkthrough, a punch list closed out, and a one-year workmanship warranty on file.',
+  },
+];
+---
+
+<section class="process" id="process" aria-label="Our process">
+  <div class="process__header">
+    <p class="process__eyebrow">How it works</p>
+    <h2 class="process__heading">Four steps. No surprises.</h2>
+  </div>
+
+  <div class="process__track" data-process-track>
+    <div class="process__line" aria-hidden="true">
+      <div class="process__line-fill" data-process-fill></div>
+    </div>
+    <ol class="process__steps">
+      {
+        steps.map((step, i) => (
+          <li class="process__step" data-process-step>
+            <span class="process__number">0{i + 1}</span>
+            <h3 class="process__title">{step.title}</h3>
+            <p class="process__desc">{step.desc}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: var(--color-navy-950);
+    color: white;
+  }
+
+  .process__header {
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+    margin-bottom: clamp(3rem, 7vw, 5rem);
+  }
+  .process__eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-lime-300);
+    margin-bottom: 1rem;
+  }
+  .process__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+  }
+
+  .process__track {
+    position: relative;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+  }
+
+  .process__line {
+    display: none;
+  }
+
+  .process__steps {
+    list-style: none;
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  .process__number {
+    display: block;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--color-sky-400);
+    margin-bottom: 1rem;
+  }
+  .process__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .process__desc {
+    color: rgba(247, 247, 244, 0.75);
+    line-height: 1.6;
+    max-width: 32ch;
+  }
+
+  @media (min-width: 900px) {
+    .process__steps {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      padding-top: 2.5rem;
+    }
+    .process__line {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: clamp(1.25rem, 5vw, 3.5rem);
+      right: clamp(1.25rem, 5vw, 3.5rem);
+      height: 2px;
+      background: rgba(247, 247, 244, 0.15);
+    }
+    .process__line-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--color-sky-400), var(--color-lime-500));
+      transform-origin: left center;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, initGsap, prefersReducedMotion } from '../lib/motion';
+
+  const track = document.querySelector<HTMLElement>('[data-process-track]');
+  const fill = document.querySelector<HTMLElement>('[data-process-fill]');
+  const steps = document.querySelectorAll<HTMLElement>('[data-process-step]');
+
+  if (track && fill && steps.length) {
+    if (prefersReducedMotion()) {
+      fill.style.width = '100%';
+      steps.forEach((s) => (s.style.opacity = '1'));
+    } else {
+      initGsap();
+      gsap.set(steps, { autoAlpha: 0, y: 24 });
+
+      ScrollTrigger.create({
+        trigger: track,
+        start: 'top 70%',
+        end: 'bottom 60%',
+        onEnter: () => {
+          gsap.to(steps, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.15, ease: 'expo.out' });
+          gsap.to(fill, { width: '100%', duration: 1.4, ease: 'power2.inOut', delay: 0.2 });
+        },
+        once: true,
+      });
+    }
+  }
+</script>
